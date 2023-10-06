@@ -1,0 +1,5 @@
+{
+    "dependencies": {
+        "@prb/math": "^3.3.1"
+    }
+}

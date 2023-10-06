@@ -18,7 +18,7 @@ import {IDiamondCut} from "blockend/interfaces/IDiamondCut.sol";
 
 /* solhint-disable */
 library LibDiamond {
-    bytes32 constant DIAMOND_STORAGE_POSITION = keccak256("diamond.standard.diamond.storage") - 1;
+    bytes32 constant DIAMOND_STORAGE_POSITION = keccak256("diamond.standard.diamond.storage");
 
     struct DiamondStorage {
         // maps function selectors to the facets that execute the functions.
