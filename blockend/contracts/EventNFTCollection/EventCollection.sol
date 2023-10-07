@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.19;
 
-import { ClonableERC721 } from "blockend/contracts/utils/ClonableERC721.sol";
+import { ClonableERC721 } from "../utils/ClonableERC721.sol";
 
 error CallerNotDiamond();
 
@@ -21,8 +21,8 @@ contract EventCollection is ClonableERC721 {
     /**
      * @dev No need for initializer, super.initialize already has it
      */
-    function initialize(string memory name, string memory symbol, string memory description) public {
-        super.initialize(name, symbol, description);
+    function initializes(string memory _name, string memory _symbol, string memory _description) public {
+        super.initialize(_name, _symbol, _description);
     }
 
     function mint(address to, uint256 quantity) external onlyDiamond {

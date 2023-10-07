@@ -12,10 +12,11 @@ library Errors {
     error DescriptionMustBeDifferent();
     error TimeLockNotMet();
     error CallerNotSubscriptor(address caller);
-    error EventCreditIdNotValid(uint16 subscriptionId, uint16 eventCreditId);
+    error EventCreditIdNotValid(uint16 subscriptionId, uint256 eventCreditId);
     error SubscriptionCanceled(uint16 subscriptionId);
     error CloneFailed();
     error NFTAlreadyMinted();
     error EventCreditNotClaimed();
     error EventCreditAlreadyRedeemed();
+    error FunctionNotFound(bytes4 selector);
 }

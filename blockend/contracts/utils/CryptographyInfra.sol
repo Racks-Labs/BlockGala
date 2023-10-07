@@ -6,29 +6,28 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {MessageHashUtils} from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 contract CryptographyInfra {
-
     function _verifySignature(
         address user,
         uint256 amount,
         uint256 limitTimestamp,
         bytes memory signature,
-        address signingAddress
+        address signer
     ) internal view returns(bool) {
         bytes32 messageHash = keccak256(
                     abi.encodePacked(
                         user,
                         amount,
-                        limitTimestamp,
+                        limitTimestamp
                     )
                 );
 
         return ECDSA.recover(
-                ECDSA.toEthSignedMessageHash(messageHash),
+                MessageHashUtils.toEthSignedMessageHash(messageHash),
                 signature
-        ) == s.admin;
+        ) == signer;
     }
 
     function _verifySignatureRedeemer(
@@ -37,19 +36,20 @@ contract CryptographyInfra {
         uint256 eventCreditId,
         uint256 limitTimestamp,
         bytes memory signature,
+        address signer
     ) internal view returns(bool) {
         bytes32 messageHash = keccak256(
                     abi.encodePacked(
                         user,
                         subscriptionId,
                         eventCreditId,
-                        limitTimestamp,
+                        limitTimestamp
                     )
                 );
 
         return ECDSA.recover(
-                ECDSA.toEthSignedMessageHash(messageHash),
+                MessageHashUtils.toEthSignedMessageHash(messageHash),
                 signature
-        ) == s.admin;
+        ) == signer;
     }
 }

@@ -2,8 +2,8 @@
 
 pragma solidity 0.8.19;
 
-import {AppStorage} from "blockend/contracts/libraries/AppStorage.sol";
-import {Errors} from "blockend/contracts/libraries/Errors.sol";
+import {AppStorage} from "./AppStorage.sol";
+import {Errors} from "./Errors.sol";
 
 contract Modifiers {
     AppStorage internal s;
@@ -36,12 +36,12 @@ contract Modifiers {
     }
 
     modifier onlySubscriptors(uint16 subscriptionId) {
-        if (!s.subscribers[msg.sender][subscriptionId]) revert Errors.CallerNotSubscriptor(msg.sender);
+        if (!s.subscribers[msg.sender].isSubscriber[subscriptionId]) revert Errors.CallerNotSubscriptor(msg.sender);
         _;
     }
 
-    modifier isEventCreditIdValid(uint16 subscriptionId, uint16 eventCreditId) {
-        if (s.subscriptions[subscriptionId][eventCreditId].subscriptionId == 0)
+    modifier isEventCreditIdValid(uint16 subscriptionId, uint256 eventCreditId) {
+        if (s.subscriptions[subscriptionId].eventCredits[eventCreditId].subscriptionId == 0)
             revert Errors.EventCreditIdNotValid(subscriptionId, eventCreditId);
         _;
     }

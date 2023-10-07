@@ -2,12 +2,13 @@
 
 pragma solidity 0.8.19;
 
-import {AppStorage} from "blockend/contracts/libraries/AppStorage.sol";
-import {Errors} from "blockend/contracts/libraries/Errors.sol";
-import {Modifiers} from "blockend/contracts/libraries/Modifiers.sol";
-import {Events} from "blockend/contracts/libraries/Events.sol";
-import {DataTypes as Types} from "blockend/contracts/libraries/DataTypes.sol";
+import {AppStorage} from "../libraries/AppStorage.sol";
+import {Errors} from "../libraries/Errors.sol";
+import {Modifiers} from "../libraries/Modifiers.sol";
+import {Events} from "../libraries/Events.sol";
+import {DataTypes as Types} from "../libraries/DataTypes.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
+import {Constants} from "../libraries/Constants.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
 contract OrganizerFacet is Modifiers {
@@ -89,7 +90,7 @@ contract OrganizerFacet is Modifiers {
         uint16 subscriptionId
     ) external onlyDiamond onlySubscriptionCreator(subscriptionId) {
         // Change the name of a subscription
-        if (s.subscriptions[subscriptionId].timeLockFunc.name != newName) revert Errors.NameMustBeDifferent();
+        if (keccak256(abi.encode(s.subscriptions[subscriptionId].timeLockFunc.name)) != keccak256(abi.encode(newName))) revert Errors.NameMustBeDifferent();
 
         uint deadlineToModify = s.subscriptions[subscriptionId].timeLockFunc.time;
         if (deadlineToModify < block.timestamp) revert Errors.TimeLockNotMet();
@@ -131,7 +132,7 @@ contract OrganizerFacet is Modifiers {
     }
 
     function cloneOrganizerVault(uint16 subscriptionId) private {
-        address newOrganizerVault = ORGANIZER_VAULT_IMPLEMENTATION.clone();
+        address newOrganizerVault = Constants.ORGANIZER_VAULT_IMPLEMENTATION.clone();
         uint codeSize;
 
         assembly {

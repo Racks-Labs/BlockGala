@@ -14,7 +14,8 @@ pragma solidity 0.8.19;
  * /*****************************************************************************
  */
 
-import {IDiamondCut} from "blockend/contracts/interfaces/IDiamondCut.sol";
+import {IDiamondCut} from "../interfaces/IDiamondCut.sol";
+import {console} from "../../lib/forge-std/src/console.sol";
 
 /* solhint-disable */
 library LibDiamond {
@@ -132,6 +133,9 @@ library LibDiamond {
             ) {
                 bytes4 selector = _selectors[selectorIndex];
                 bytes32 oldFacet = ds.facets[selector];
+                console.log("This is the old facet: ");
+                console.logBytes32(oldFacet);
+                console.logBytes4(selector);
                 require(
                     address(bytes20(oldFacet)) == address(0),
                     "LibDiamondCut: Can't add function that already exists"

@@ -3,6 +3,7 @@
 pragma solidity 0.8.19;
 
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 library DataTypes {
 

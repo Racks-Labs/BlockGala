@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
-import {LibDiamond} from "blockend/contracts/libraries/LibDiamond.sol";
-import {Errors} from "blockend/contracts/libraries/Errors.sol";
-import { DataTypes as Types } from "blockend/contracts/libraries/DataTypes.sol";
+import { DataTypes as Types } from "./DataTypes.sol";
 
 struct AppStorage {
     address admin;

@@ -1,6 +1,9 @@
 [profile.default]
-src = "src"
-out = "out"
+solc-version = "0.8.19"
+src = "contracts"
+out = 'foundry/artifacts'
+cache_path = 'foundry/cache'
 libs = ["lib"]
+fs_permissions = [{ access = "read", path = "../node_modules/"}]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

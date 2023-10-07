@@ -1,21 +1,19 @@
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts (last updated v5.0.0) (token/ERC721/ERC721.sol)
 
-pragma solidity ^0.8.20;
+pragma solidity 0.8.19;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import {IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import {Context} from "@openzeppelin/contracts/utils/Context.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {IERC165, ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import {IERC721Errors} from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
 /**
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
  */
-abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Errors {
+abstract contract ClonableERC721 is IERC721, Context, IERC721Errors {
     using Strings for uint256;
 
     // Token name
@@ -46,25 +44,11 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     /**
      * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
-    constructor(string memory name_, string memory symbol_, string memory description) {
+
+    function initialize(string memory name_, string memory symbol_, string memory description_) public initializer {
         _name = name_;
         _symbol = symbol_;
-        _description = description;
-    }
-
-    function initialize(string memory name_, string memory symbol_) public initializer {
-        _name = name_;
-        _symbol = symbol_;
-    }
-
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
-        return
-            interfaceId == type(IERC721).interfaceId ||
-            interfaceId == type(IERC721Metadata).interfaceId ||
-            super.supportsInterface(interfaceId);
+        _description = description_;
     }
 
     /**
@@ -243,6 +227,8 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         }
     }
 
+    function supportsInterface(bytes4 interfaceId) external virtual view returns (bool) {}
+
     /**
      * @dev Transfers `tokenId` from its current owner to `to`, or alternatively mints (or burns) if the current owner
      * (or `to`) is the zero address. Returns the owner of the `tokenId` before the update.
@@ -359,7 +345,7 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
      *
      * Emits a {Transfer} event.
      */
-    function _transfer(address from, address to, uint256 tokenId) internal {
+    function _transfer(address from, address to, uint256 tokenId) internal virtual {
         if (to == address(0)) {
             revert ERC721InvalidReceiver(address(0));
         }
