@@ -3,5 +3,5 @@
 pragma solidity 0.8.19;
 
 library Constants {
-
+    uint MAX_TIME_DIFF_TIMELOCK = 1 days;
 }

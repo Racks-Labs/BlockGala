@@ -16,6 +16,7 @@ library DataTypes {
         string organizationName;
         string name;
         string description;
+        TimeLockFunc timeLockFunc;
     }
 
     struct Subscriber {
@@ -31,5 +32,20 @@ library DataTypes {
         string description;
         uint256 numOfClaims;
         uint256 numOfResells;
+    }
+
+    struct SubscriptionConfig {
+        address creator;
+        uint256 deadline;
+        uint256 eventCreditsPromised;
+        string organizationName;
+        string name;
+        string description;
+    }
+
+    struct TimeLockFunc {
+        uint256 time;
+        string name;
+        string description;
     }
 }

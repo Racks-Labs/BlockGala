@@ -26,4 +26,10 @@ contract Modifiers {
             revert Errors.SubscriptionNotInitialized(subscriptionId);
         _;
     }
+
+    modifier isSubscriptionCreated(uint16 subscriptionId) {
+        if (s.subscriptions[subscriptionId].deadline != 0)
+            revert Errors.SubscriptionAlreadyCreated(subscriptionId);
+        _;
+    }
 }
