@@ -11,4 +11,5 @@ library Errors {
     error NameMustBeDifferent();
     error DescriptionMustBeDifferent();
     error TimeLockNotMet();
+    error CallerNotSubscriptor(address caller);
 }

@@ -82,7 +82,7 @@ contract RegistryFacet is Modifiers {
         uint16 subscriptionId
     ) external onlyDiamond onlySubscriptionCreator(subscriptionId) {
         // Change the name of a subscription
-        if (s.subscriptions[subscriptionId].timeLockFunc.name != newName)   revert Errors.NameMustBeDifferent();
+        if (s.subscriptions[subscriptionId].timeLockFunc.name != newName) revert Errors.NameMustBeDifferent();
 
         uint deadlineToModify = s.subscriptions[subscriptionId].timeLockFunc.time;
         if (deadlineToModify < block.timestamp) revert Errors.TimeLockNotMet();

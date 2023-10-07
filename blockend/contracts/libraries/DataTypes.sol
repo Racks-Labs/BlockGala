@@ -8,6 +8,7 @@ library DataTypes {
         address creator;
         uint256 startTime;
         uint256 deadline;
+        uint256 eventCreditsCreated;
         uint256 eventCreditsPromised; // Number of tokens/credits for attending events
         mapping(uint256 eventCreditId => EventCredit) eventCredits;
         uint256 lastEventClaimed; // ID or timestamp of the last event claimed
@@ -20,9 +21,9 @@ library DataTypes {
     }
 
     struct Subscriber {
-        address subscriber;
         uint256[] subscriptionsIds;
         uint256 eventCredits; // total number of event credits accrued
+        mapping(uint256 subscriptionId => bool) isSubscriber;
     }
 
     struct EventCredit {
@@ -32,6 +33,7 @@ library DataTypes {
         string description;
         uint256 numOfClaims;
         uint256 numOfResells;
+        TimeLockFunc timeLockFunc;
     }
 
     struct SubscriptionConfig {
@@ -39,6 +41,11 @@ library DataTypes {
         uint256 deadline;
         uint256 eventCreditsPromised;
         string organizationName;
+        string name;
+        string description;
+    }
+
+    struct EventCreditConfig {
         string name;
         string description;
     }

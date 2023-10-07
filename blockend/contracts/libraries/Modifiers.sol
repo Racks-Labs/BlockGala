@@ -32,4 +32,9 @@ contract Modifiers {
             revert Errors.SubscriptionAlreadyCreated(subscriptionId);
         _;
     }
+
+    modifier onlySubscriptors() {
+        if (!s.subscribers[msg.sender][subscriptionId]) revert Errors.CallerNotSubscriptor(msg.sender);
+        _;
+    }
 }

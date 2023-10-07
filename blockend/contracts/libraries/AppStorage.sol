@@ -12,4 +12,5 @@ struct AppStorage {
     uint numOfSubscribers; // total number of subscribers
     mapping(uint16 => Types.Subscription) subscriptions;
     mapping(address => Types.Subscriber) subscribers;
+    mapping (bytes => bool) internal usedSignatures;
 }
