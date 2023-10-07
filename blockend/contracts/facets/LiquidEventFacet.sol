@@ -11,6 +11,8 @@ contract LiquidEventFacet is Modifiers {
 
     function createLiquidEvent(uint16 subscriptionId, Types.EventCreditConfig config, uint mevDeadline) external onlyDiamond onlySubscriptionCreator(subscriptionId) {
         // Create event from subscription
+        require(s.subscriptions[subscriptionId].eventCreditsPromised > s.subscriptions[subscriptionId].eventCreditsCreated);
+
         uint256 currentEventId = s.subscriptions[subscriptionId].eventCreditsCreated;
         Types.Subscription storage newEventCredit = s.subscriptions[subscriptionId][currentEventId];
 
@@ -24,6 +26,7 @@ contract LiquidEventFacet is Modifiers {
 
         unchecked {
             newEventCredit.eventCreditsCreated++;
+            s.subscriptions[subscriptionId].eventCreditsCreated++;
         }
     }
 
@@ -62,8 +65,11 @@ contract LiquidEventFacet is Modifiers {
         s.subscriptions[subscriptionId][eventCreditId].description = s.subscriptions[subscriptionId][eventCreditId].timeLockFunc.description;
     }
 
-    function claimLiquidEvent() external onlyDiamond {
+    function claimLiquidEvent(uint16 subscriptionId, uint256 eventCreditId) external onlyDiamond isSubscriptionValid(subscriptionId) onlySubscriptors(subscriptionId) isEventCreditIdValid(subscriptionId, eventCreditId) {
         // Claim event
+        require(!s.subscribers[subscriptionId].eventCredits[eventCreditId].isClaimed[msg.sender], "Already claimed");
         
+        s.subscriptions[subscriptionId][eventCreditId].numOfClaims++;
+        s.subscribers[subscriptionId].eventCredits[eventCreditId].isClaimed[msg.sender] = true;
     }
 }

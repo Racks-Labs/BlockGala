@@ -11,12 +11,12 @@ library DataTypes {
         uint256 eventCreditsCreated;
         uint256 eventCreditsPromised; // Number of tokens/credits for attending events
         mapping(uint256 eventCreditId => EventCredit) eventCredits;
-        uint256 lastEventClaimed; // ID or timestamp of the last event claimed
         uint256 usersClaimed; // Number of users who have bought the subscription
         bool isCanceled;
         string organizationName;
         string name;
         string description;
+        uint256 dollarsAdquired;
         TimeLockFunc timeLockFunc;
     }
 
@@ -34,6 +34,8 @@ library DataTypes {
         uint256 numOfClaims;
         uint256 numOfResells;
         TimeLockFunc timeLockFunc;
+        mapping(address => bool) isClaimed;
+        mapping(address => bool) isRedeemed;
     }
 
     struct SubscriptionConfig {

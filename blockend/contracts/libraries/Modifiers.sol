@@ -24,6 +24,8 @@ contract Modifiers {
     modifier isSubscriptionValid(uint16 subscriptionId) {
         if (s.subscriptions[subscriptionId].deadline == 0)
             revert Errors.SubscriptionNotInitialized(subscriptionId);
+        if (s.subscriptions[subscriptionId].isCanceled)
+            revert Errors.SubscriptionCanceled(subscriptionId);
         _;
     }
 
@@ -33,8 +35,14 @@ contract Modifiers {
         _;
     }
 
-    modifier onlySubscriptors() {
+    modifier onlySubscriptors(uint16 subscriptionId) {
         if (!s.subscribers[msg.sender][subscriptionId]) revert Errors.CallerNotSubscriptor(msg.sender);
+        _;
+    }
+
+    modifier isEventCreditIdValid(uint16 subscriptionId, uint16 eventCreditId) {
+        if (s.subscriptions[subscriptionId][eventCreditId].subscriptionId == 0)
+            revert Errors.EventCreditIdNotValid(subscriptionId, eventCreditId);
         _;
     }
 }

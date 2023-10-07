@@ -8,7 +8,7 @@ import {Modifiers} from "blockend/contracts/libraries/Modifiers.sol";
 import {Events} from "blockend/contracts/libraries/Events.sol";
 import {DataTypes as Types} from "blockend/contracts/libraries/DataTypes.sol";
 
-contract RegistryFacet is Modifiers {
+contract OrganizerFacet is Modifiers {
     // Registry logic for corporation wanting to use the platform
 
     function registerSubscription(
@@ -106,7 +106,7 @@ contract RegistryFacet is Modifiers {
     function extendDeadline(
         uint newDeadline,
         uint16 subscriptionId
-    ) external onlyDiamond {
+    ) external onlyDiamond onlySubscriptionCreator(subscriptionId) {
         // Extend the deadline of a subscription
         if (s.subscriptions[subscriptionId].deadline <= newDeadline)
             revert Errors.DeadlineMustBeGreaterThanPrevious();
@@ -116,7 +116,7 @@ contract RegistryFacet is Modifiers {
     function incrementPromisedEventCredits(
         uint16 subscriptionId,
         uint newAmount
-    ) external onlyDiamond {
+    ) external onlyDiamond onlySubscriptionCreator(subscriptionId) {
         // Increment event credits
         if (s.subscriptions[subscriptionId].eventCreditsPromised <= newAmount)
             revert Errors.EventCreditsMustBeGreaterThanPrevious();

@@ -8,13 +8,14 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract PaymentInfra {
+contract CryptographyInfra {
 
     function _verifySignature(
         address user,
         uint256 amount,
         uint256 limitTimestamp,
-        bytes memory signature
+        bytes memory signature,
+        address signingAddress
     ) internal view returns(bool) {
         bytes32 messageHash = keccak256(
                     abi.encodePacked(
@@ -27,6 +28,28 @@ contract PaymentInfra {
         return ECDSA.recover(
                 ECDSA.toEthSignedMessageHash(messageHash),
                 signature
-        ) == signingAddress;
+        ) == s.admin;
+    }
+
+    function _verifySignatureRedeemer(
+        address user,
+        uint256 subscriptionId,
+        uint256 eventCreditId,
+        uint256 limitTimestamp,
+        bytes memory signature,
+    ) internal view returns(bool) {
+        bytes32 messageHash = keccak256(
+                    abi.encodePacked(
+                        user,
+                        subscriptionId,
+                        eventCreditId,
+                        limitTimestamp,
+                    )
+                );
+
+        return ECDSA.recover(
+                ECDSA.toEthSignedMessageHash(messageHash),
+                signature
+        ) == s.admin;
     }
 }

@@ -4,7 +4,7 @@ pragma solidity 0.8.19;
 
 import { AppStorage } from "blockend/contracts/libraries/AppStorage.sol";
 import { Modifiers } from "blockend/contracts/libraries/Modifiers.sol";
-import { PaymentInfra } from "blockend/contracts/utils/PaymentInfra.sol";
+import { CryptographyInfra } from "blockend/contracts/utils/CryptographyInfra.sol";
 import { Constants } from "blockend/contracts/libraries/Constants.sol";
 
 contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
@@ -12,14 +12,16 @@ contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
 
     function buyLiquidSubscription(uint16 subscriptionId, uint256 paidInDollars, uint256 mevLimitTimestamp) onlyDiamond isSubscriptionValid(subscriptionId) public {
         // Claim liquid subscription
-
         require(block.timestamp <= mevLimitTimestamp, "Payment expired");
         require(paidInDollars > 0, "Amount must be greater than 0");
+        require(!s.subscribers[msg.sender][subscriptionId], "Already subscribed");
 
         (bool success) = USDC.transferFrom(user, address(this), paidInDollars);
         require(success, "Transfer failed");
 
         s.subscribers[msg.sender][subscriptionId] = true;
+        s.subscriptions[subscriptionId].dollarsAdquired += paidInDollars;
+        s.subscriptions[subscriptionId].usersClaimed += 1;
 
         emit Events.SubscriptionClaimed(subscriptionId, msg.sender, paidInDollars);
     }
@@ -29,6 +31,7 @@ contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
         require(block.timestamp <= limitTimestamp, "Payment expired");
         require(!usedSignatures[signature], "Signature already used"); 
         require(amount > 0, "Amount must be greater than 0");
+        require(!s.subscribers[msg.sender][subscriptionId], "Already subscribed");
 
         IERC20Permit(USDC).permit(user, address(this), amount, limitTimestamp, v, r, _s);
         (bool success) = USDC.transferFrom(user, address(this), amount);
@@ -36,6 +39,7 @@ contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
         s.usedSignatures[signature] = true;
 
         s.subscribers[msg.sender][subscriptionId] = true;
+        s.subscriptions[subscriptionId].dollarsAdquired += paidInDollars;
 
         emit Events.SubscriptionClaimed(subscriptionId, msg.sender, paidInDollars);
     }
@@ -45,6 +49,7 @@ contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
         require(block.timestamp <= limitTimestamp, "Payment expired");
         require(!usedSignatures[signature], "Signature already used"); 
         require(amount > 0, "Amount must be greater than 0");
+        require(!s.subscribers[msg.sender][subscriptionId], "Already subscribed");
 
         s.usedSignatures[signature] = true;
 
@@ -56,6 +61,7 @@ contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
         }), "Invalid signature");
 
         s.subscribers[msg.sender][subscriptionId] = true;
+        s.subscriptions[subscriptionId].dollarsAdquired += paidInDollars;
 
         emit Events.SubscriptionClaimed(subscriptionId, msg.sender, paidInDollars);
     }
