@@ -6,6 +6,10 @@ import { AppStorage } from "blockend/contracts/libraries/AppStorage.sol";
 import { Modifiers } from "blockend/contracts/libraries/Modifiers.sol";
 import { DataTypes } from "blockend/contracts/libraries/DataTypes.sol";
 
+interface IERC721Clonable is IERC721 {
+    function initialize(string memory name, string memory symbol, string memory description) external;
+}
+
 contract LiquidEventFacet is Modifiers {
     // Event generation logic
 
@@ -23,6 +27,8 @@ contract LiquidEventFacet is Modifiers {
 
         // prevent function execution if mevDeadline is not met
         require(mevDeadline > block.timestamp + 2 hours);
+
+        cloneEventNFTCollection(subscriptionId, currentEventId);
 
         unchecked {
             newEventCredit.eventCreditsCreated++;
@@ -71,5 +77,24 @@ contract LiquidEventFacet is Modifiers {
 
         s.subscriptions[subscriptionId][eventCreditId].numOfClaims++;
         s.subscriptions[subscriptionId].eventCredits[eventCreditId].isClaimed[msg.sender] = true;
+    }
+
+    function cloneEventNFTCollection(uint16 subscriptionId, uint256 eventCreditId) private {
+        address newEventNFTCollection = EVENT_COLLECTION_IMPLEMENTATION.clone();
+        uint codeSize;
+
+        assembly {
+          codeSize := extcodesize(newEventNFTCollection)
+        }
+        
+        if (newEventNFTCollection == address(0) || codeSize == 0) revert Errors.CloneFailed();
+
+        IERC721Clonable(newEventNFTCollection).initialize(
+            s.subscriptions[subscriptionId].name,
+            "TEST",
+            s.subscriptions[subscriptionId].description
+        );
+
+        s.subscriptions[subscriptionId].eventCredits[eventCreditId].eventNFTCollection = IERC721(newEventNFTCollection);
     }
 }

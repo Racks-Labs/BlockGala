@@ -42,6 +42,7 @@ library DataTypes {
         TimeLockFunc timeLockFunc;
         mapping(address => bool) isClaimed;
         mapping(address => bool) isRedeemed;
+        IERC721 eventNFTCollection;
     }
 
     struct SubscriptionConfig {

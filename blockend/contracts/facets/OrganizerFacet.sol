@@ -36,15 +36,6 @@ contract OrganizerFacet is Modifiers {
         require(mevDeadline > block.timestamp + 2 hours);
         require(nextSubscriptionId == subscriptionId);
 
-        address newOrganizerVault = ORGANIZER_VAULT_IMPLEMENTATION.clone();
-        uint codeSize;
-        assembly {
-          codeSize := extcodesize(_a)
-        }
-        
-        if (newOrganizerVault == address(0) || codeSize == 0) revert Errors.CloneFailed();
-
-        s.subscriptions[subscriptionId].organizerVault = IERC4626(newOrganizerVault);
 
         unchecked {
             s.numOfSubscriptions++;
@@ -136,5 +127,18 @@ contract OrganizerFacet is Modifiers {
         if (s.subscriptions[subscriptionId].eventCreditsPromised <= newAmount)
             revert Errors.EventCreditsMustBeGreaterThanPrevious();
         s.subscriptions[subscriptionId].eventCreditsPromised = newAmount;
+    }
+
+    function cloneOrganizerVault() private {
+        address newOrganizerVault = ORGANIZER_VAULT_IMPLEMENTATION.clone();
+        uint codeSize;
+
+        assembly {
+          codeSize := extcodesize(newOrganizerVault)
+        }
+        
+        if (newOrganizerVault == address(0) || codeSize == 0) revert Errors.CloneFailed();
+
+        s.subscriptions[subscriptionId].organizerVault = IERC4626(newOrganizerVault);
     }
 }

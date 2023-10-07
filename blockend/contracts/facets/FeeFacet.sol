@@ -7,4 +7,6 @@ import { Modifiers } from "blockend/contracts/libraries/Modifiers.sol";
 
 contract FeeFacet is Modifiers {
     // Fee logic for protocol and creators
+
+    
 }

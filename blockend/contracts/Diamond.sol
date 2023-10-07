@@ -15,10 +15,10 @@ import {Constants} from "blockend/contracts/utils/Constants.sol";
 // See https://github.com/mudgen/diamond-2-hardhat/blob/main/contracts/Diamond.sol
 // All code taken from diamond implementation, other than init code
 
-contract Diamond is Constants{
+contract Diamond is Constants {
     AppStorage internal s;
 
-    constructor(address _protocolOwner, address _diamondCutFacet, address _usdcAddress, address _organizerVaultAddressImplementation)
+    constructor(address _protocolOwner, address _diamondCutFacet, address _usdcAddress, address _organizerVaultAddressImplementation, address _eventCollectionAddressImplementation)
         payable
     {
         LibDiamond.setProtocolOwner(_protocolOwner);
@@ -41,8 +41,9 @@ contract Diamond is Constants{
         ds.supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
 
-        // initialize the protocol AppStorage
+        // initialize the protocol AppStorage and Constants
         USDC = IERC20(_usdcAddress);
+        EVENT_COLLECTION_IMPLEMENTATION = IERC721(_eventCollectionAddressImplementation);
         ORGANIZER_VAULT_IMPLEMENTATION = IERC4626(_organizerVaultAddressImplementation);
     }
 
