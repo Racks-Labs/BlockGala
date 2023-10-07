@@ -77,7 +77,13 @@ contract LiquidEventFacet is Modifiers {
 
         s.subscriptions[subscriptionId][eventCreditId].numOfClaims++;
         s.subscriptions[subscriptionId].eventCredits[eventCreditId].isClaimed[msg.sender] = true;
-    }
+
+        s.subscribers[msg.sender].eventCreditsClaimed[subscriptionId][eventCreditId] = true;
+
+        unchecked {
+            s.subscribers[msg.sender].eventCredits++;
+        }
+        }
 
     function cloneEventNFTCollection(uint16 subscriptionId, uint256 eventCreditId) private {
         address newEventNFTCollection = EVENT_COLLECTION_IMPLEMENTATION.clone();

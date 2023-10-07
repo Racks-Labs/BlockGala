@@ -15,4 +15,7 @@ library Errors {
     error EventCreditIdNotValid(uint16 subscriptionId, uint16 eventCreditId);
     error SubscriptionCanceled(uint16 subscriptionId);
     error CloneFailed();
+    error NFTAlreadyMinted();
+    error EventCreditNotClaimed();
+    error EventCreditAlreadyRedeemed();
 }

@@ -46,6 +46,11 @@ contract Diamond is Constants {
         EVENT_COLLECTION_IMPLEMENTATION = IERC721(_eventCollectionAddressImplementation);
         ORGANIZER_VAULT_IMPLEMENTATION = IERC4626(_organizerVaultAddressImplementation);
     }
+    
+    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external returns (bytes4) {
+        // ERC721 callback
+        return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
+    }
 
     // Find facet for function that is called and execute the
     // function if a facet is found and return any value.

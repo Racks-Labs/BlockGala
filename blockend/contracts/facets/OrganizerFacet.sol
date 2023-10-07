@@ -36,6 +36,7 @@ contract OrganizerFacet is Modifiers {
         require(mevDeadline > block.timestamp + 2 hours);
         require(nextSubscriptionId == subscriptionId);
 
+        cloneOrganizerVault(subscriptionId);
 
         unchecked {
             s.numOfSubscriptions++;
@@ -71,17 +72,17 @@ contract OrganizerFacet is Modifiers {
         );
     }
 
-    function cancelSubscription(
-        uint16 subscriptionId
-    ) external onlyDiamond onlySubscriptionCreator(subscriptionId) {
-        // Cancel a subscription
-        // if it is unabled without meeting deadlines, a % of the subscription time lift
-        // and event credits left will compute the money the org has to pay back to users
-        if (s.subscriptions[subscriptionId].deadline == 0)
-            revert Errors.SubscriptionNotInitialized(subscriptionId);
+    //function cancelSubscription(
+    //    uint16 subscriptionId
+    //) external onlyDiamond onlySubscriptionCreator(subscriptionId) {
+    //    // Cancel a subscription
+    //    // if it is unabled without meeting deadlines, a % of the subscription time lift
+    //    // and event credits left will compute the money the org has to pay back to users
+    //    if (s.subscriptions[subscriptionId].deadline == 0)
+    //        revert Errors.SubscriptionNotInitialized(subscriptionId);
 
-        s.subscriptions[subscriptionId].isCanceled = true;
-    }
+    //    s.subscriptions[subscriptionId].isCanceled = true;
+    //}
 
     function changeName(
         string memory newName,
@@ -129,7 +130,7 @@ contract OrganizerFacet is Modifiers {
         s.subscriptions[subscriptionId].eventCreditsPromised = newAmount;
     }
 
-    function cloneOrganizerVault() private {
+    function cloneOrganizerVault(uint16 subscriptionId) private {
         address newOrganizerVault = ORGANIZER_VAULT_IMPLEMENTATION.clone();
         uint codeSize;
 

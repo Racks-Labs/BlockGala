@@ -30,6 +30,7 @@ library DataTypes {
         uint256 eventCredits; // total number of event credits accrued
         mapping(uint256 subscriptionId => bool) isSubscriber;
         mapping(uint16 subscriptionId => SubscriptionInfo) subscriptionInfo;
+        mapping(uint16 subscriptionId => mapping(uint eventCreditId => bool)) eventCreditsClaimed;
     }
 
     struct EventCredit {
@@ -42,6 +43,7 @@ library DataTypes {
         TimeLockFunc timeLockFunc;
         mapping(address => bool) isClaimed;
         mapping(address => bool) isRedeemed;
+        mapping(address => bool) isNFT;
         IERC721 eventNFTCollection;
     }
 

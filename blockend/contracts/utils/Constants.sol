@@ -9,6 +9,6 @@ import { IERC4626 } from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 contract Constants {
     uint constant MAX_TIME_DIFF_TIMELOCK = 1 days;
     IERC20 immutable USDC;
-    IERC4626 immutable ORGANIZER_VAULT_IMPLEMENTATION;
     IERC721 immutable EVENT_COLLECTION_IMPLEMENTATION;
+    IERC4626 immutable ORGANIZER_VAULT_IMPLEMENTATION;
 }

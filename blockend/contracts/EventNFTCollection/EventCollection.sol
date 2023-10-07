@@ -21,12 +21,20 @@ contract EventCollection is ClonableERC721 {
     /**
      * @dev No need for initializer, super.initialize already has it
      */
-    function intialize(string memory name, string memory symbol, string memory description) public {
+    function initialize(string memory name, string memory symbol, string memory description) public {
         super.initialize(name, symbol, description);
     }
 
     function mint(address to, uint256 quantity) external onlyDiamond {
         _mint(to, quantity);
+    }
+    // set to onlyDiamond so only transfers, mints and burns can be done by the diamond, managing correlationed data
+    function _transfer(address from, address to, uint256 tokenId) internal onlyDiamond override {
+        super._transfer(from, to, tokenId);
+    }
+
+    function burn(uint256 tokenId) external onlyDiamond {
+        _burn(tokenId);
     }
 
     function changeBaseUri(string memory _newBaseURI) external onlyDiamond {
