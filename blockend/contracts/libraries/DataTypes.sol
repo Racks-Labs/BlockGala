@@ -2,12 +2,16 @@
 
 pragma solidity 0.8.19;
 
+import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
+
 library DataTypes {
 
     struct Subscription {
         address creator;
         uint256 startTime;
         uint256 deadline;
+        uint256 subscriptionPrice; // in dollars
+        uint256 subscriptionLength; // in seconds
         uint256 eventCreditsCreated;
         uint256 eventCreditsPromised; // Number of tokens/credits for attending events
         mapping(uint256 eventCreditId => EventCredit) eventCredits;
@@ -18,12 +22,14 @@ library DataTypes {
         string description;
         uint256 dollarsAdquired;
         TimeLockFunc timeLockFunc;
+        IERC4626 organizerVault;
     }
 
     struct Subscriber {
         uint256[] subscriptionsIds;
         uint256 eventCredits; // total number of event credits accrued
         mapping(uint256 subscriptionId => bool) isSubscriber;
+        mapping(uint16 subscriptionId => SubscriptionInfo) subscriptionInfo;
     }
 
     struct EventCredit {
@@ -50,6 +56,13 @@ library DataTypes {
     struct EventCreditConfig {
         string name;
         string description;
+    }
+
+    struct SubscriptionInfo {
+        uint256 buyDate; // in seconds, last subscription purchase date
+        uint256 expiration; // in seconds, last subscription expiration date
+        uint256 timesBought; // how many times the subscription has been bought
+        uint256 costPerSubscription; // in dollars
     }
 
     struct TimeLockFunc {

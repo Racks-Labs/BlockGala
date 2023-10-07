@@ -7,8 +7,11 @@ import {Errors} from "blockend/contracts/libraries/Errors.sol";
 import {Modifiers} from "blockend/contracts/libraries/Modifiers.sol";
 import {Events} from "blockend/contracts/libraries/Events.sol";
 import {DataTypes as Types} from "blockend/contracts/libraries/DataTypes.sol";
+import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
+import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
 contract OrganizerFacet is Modifiers {
+    using Clones for address;
     // Registry logic for corporation wanting to use the platform
 
     function registerSubscription(
@@ -33,7 +36,19 @@ contract OrganizerFacet is Modifiers {
         require(mevDeadline > block.timestamp + 2 hours);
         require(nextSubscriptionId == subscriptionId);
 
-        s.numOfSubscriptions++;
+        address newOrganizerVault = ORGANIZER_VAULT_IMPLEMENTATION.clone();
+        uint codeSize;
+        assembly {
+          codeSize := extcodesize(_a)
+        }
+        
+        if (newOrganizerVault == address(0) || codeSize == 0) revert Errors.CloneFailed();
+
+        s.subscriptions[subscriptionId].organizerVault = IERC4626(newOrganizerVault);
+
+        unchecked {
+            s.numOfSubscriptions++;
+        }
     }
     /*
     * @notice propose a name and description change for a subscription

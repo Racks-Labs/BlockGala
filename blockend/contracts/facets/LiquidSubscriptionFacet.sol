@@ -5,7 +5,6 @@ pragma solidity 0.8.19;
 import { AppStorage } from "blockend/contracts/libraries/AppStorage.sol";
 import { Modifiers } from "blockend/contracts/libraries/Modifiers.sol";
 import { CryptographyInfra } from "blockend/contracts/utils/CryptographyInfra.sol";
-import { Constants } from "blockend/contracts/libraries/Constants.sol";
 
 contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
     // Auction logic   
@@ -19,9 +18,7 @@ contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
         (bool success) = USDC.transferFrom(user, address(this), paidInDollars);
         require(success, "Transfer failed");
 
-        s.subscribers[msg.sender][subscriptionId] = true;
-        s.subscriptions[subscriptionId].dollarsAdquired += paidInDollars;
-        s.subscriptions[subscriptionId].usersClaimed += 1;
+        initSubscriptionInfoToSubscriber(subscriptionId, paidInDollars);
 
         emit Events.SubscriptionClaimed(subscriptionId, msg.sender, paidInDollars);
     }
@@ -38,8 +35,7 @@ contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
 
         s.usedSignatures[signature] = true;
 
-        s.subscribers[msg.sender][subscriptionId] = true;
-        s.subscriptions[subscriptionId].dollarsAdquired += paidInDollars;
+        initSubscriptionInfoToSubscriber(subscriptionId, paidInDollars);
 
         emit Events.SubscriptionClaimed(subscriptionId, msg.sender, paidInDollars);
     }
@@ -60,9 +56,22 @@ contract LiquidSubscriptionFacet is PaymentInfra, Modifiers {
             signature: signature
         }), "Invalid signature");
 
-        s.subscribers[msg.sender][subscriptionId] = true;
-        s.subscriptions[subscriptionId].dollarsAdquired += paidInDollars;
+        initSubscriptionInfoToSubscriber(subscriptionId, paidInDollars);
 
         emit Events.SubscriptionClaimed(subscriptionId, msg.sender, paidInDollars);
+    }
+
+    function initSubscriptionInfoToSubscriber(uint16 subscriptionId, uint256 paidInDollars) internal {
+        s.subscribers[msg.sender][subscriptionId] = true;
+        s.subscriptions[subscriptionId].dollarsAdquired += paidInDollars;
+        s.subscriptions[subscriptionId].usersClaimed += 1;
+
+        s.subscribers[msg.sender].subscriptionsIds.push(subscriptionId);
+        Types.SubscriptionInfo storage newSubscriptionInfo = s.subscribers[msg.sender].subscriptionInfo[subscriptionId];
+
+        newSubscriptionInfo.buyDate = block.timestamp;
+        newSubscriptionInfo.expiration = block.timestamp + s.subscriptions[subscriptionId].subscriptionLength;
+        newSubscriptionInfo.timesBought++;
+        newSubscriptionInfo.costPerSubscription = s.subscriptions[subscriptionId].subscriptionPrice;
     }
 }

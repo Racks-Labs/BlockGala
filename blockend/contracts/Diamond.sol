@@ -7,17 +7,18 @@ import {IDiamondLoupe} from "blockend/contracts/interfaces/IDiamondLoupe.sol";
 import {IDiamondCut} from "blockend/contracts/interfaces/IDiamondCut.sol";
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC4626 } from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {AppStorage} from "blockend/contracts/libraries/AppStorage.sol";
 import {Errors} from "blockend/contracts/libraries/Errors.sol";
-import {Constants} from "blockend/contracts/libraries/Constants.sol";
+import {Constants} from "blockend/contracts/utils/Constants.sol";
 
 // See https://github.com/mudgen/diamond-2-hardhat/blob/main/contracts/Diamond.sol
 // All code taken from diamond implementation, other than init code
 
-contract Diamond {
+contract Diamond is Constants{
     AppStorage internal s;
 
-    constructor(address _protocolOwner, address _diamondCutFacet, address _usdcAddress)
+    constructor(address _protocolOwner, address _diamondCutFacet, address _usdcAddress, address _organizerVaultAddressImplementation)
         payable
     {
         LibDiamond.setProtocolOwner(_protocolOwner);
@@ -42,6 +43,7 @@ contract Diamond {
 
         // initialize the protocol AppStorage
         USDC = IERC20(_usdcAddress);
+        ORGANIZER_VAULT_IMPLEMENTATION = IERC4626(_organizerVaultAddressImplementation);
     }
 
     // Find facet for function that is called and execute the

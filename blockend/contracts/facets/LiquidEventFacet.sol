@@ -68,8 +68,8 @@ contract LiquidEventFacet is Modifiers {
     function claimLiquidEvent(uint16 subscriptionId, uint256 eventCreditId) external onlyDiamond isSubscriptionValid(subscriptionId) onlySubscriptors(subscriptionId) isEventCreditIdValid(subscriptionId, eventCreditId) {
         // Claim event
         require(!s.subscribers[subscriptionId].eventCredits[eventCreditId].isClaimed[msg.sender], "Already claimed");
-        
+
         s.subscriptions[subscriptionId][eventCreditId].numOfClaims++;
-        s.subscribers[subscriptionId].eventCredits[eventCreditId].isClaimed[msg.sender] = true;
+        s.subscriptions[subscriptionId].eventCredits[eventCreditId].isClaimed[msg.sender] = true;
     }
 }

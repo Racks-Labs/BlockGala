@@ -14,4 +14,5 @@ library Errors {
     error CallerNotSubscriptor(address caller);
     error EventCreditIdNotValid(uint16 subscriptionId, uint16 eventCreditId);
     error SubscriptionCanceled(uint16 subscriptionId);
+    error CloneFailed();
 }
