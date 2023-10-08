@@ -19,5 +19,13 @@ export const componentsByNetworkId: Record<
         fn: () => window.location.href = "/app",
       },
     },
+    input: {
+      id: getComponent`ArtheraInput`,
+      props: {
+        fn: (input: string) => {
+          // do something with the user input
+        },
+      },
+    },
   },
 };
