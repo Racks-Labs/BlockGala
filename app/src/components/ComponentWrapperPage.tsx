@@ -75,6 +75,7 @@ export function ComponentWrapperPage(props: Props) {
       {props.meta && <MetaTags {...props.meta} />}
 
       <Component src={"landing"} />
+      {/* <Component src={"input"} /> */}
     </>
   );
 }
