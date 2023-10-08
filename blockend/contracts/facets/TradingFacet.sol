@@ -9,6 +9,9 @@ import { Errors } from "../libraries/Errors.sol";
 contract TradingFacet is Modifiers {
     // P2P trading logic
 
+    /**
+     * @dev Mint wrapper for event credit NFTs
+     */
     function mintEventCreditNFT(uint16 subscriptionId, uint256 eventCreditId, address to) external onlyDiamond isSubscriptionValid(subscriptionId) isEventCreditIdValid(subscriptionId, eventCreditId) onlySubscriptors(subscriptionId) {
         // Look into implementation address, mint an event credit, and send it to the caller
         if (s.subscriptions[subscriptionId].eventCredits[eventCreditId].isNFT[msg.sender] == true)
@@ -25,7 +28,9 @@ contract TradingFacet is Modifiers {
         eventCollection.mint(to, 1);
     }
 
-    // approves can be done directly to the NFT contract
+    /**
+     * @dev Approves have to be done directly to the NFT contract
+    **/
     function transferEventCredit(uint16 subscriptionId, uint16 eventCreditId, address from, address to, uint256 tokenId) external onlyDiamond isSubscriptionValid(subscriptionId) isEventCreditIdValid(subscriptionId, eventCreditId) {
         require(!s.subscriptions[subscriptionId].eventCredits[eventCreditId].isRedeemed[from], "Event credit already redeemed");
         require(s.subscriptions[subscriptionId].eventCredits[eventCreditId].isClaimed[from], "Event credit not claimed");

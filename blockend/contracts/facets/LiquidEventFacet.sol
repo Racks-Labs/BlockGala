@@ -18,6 +18,12 @@ contract LiquidEventFacet is Modifiers {
     using Clones for address;
     // Event generation logic
 
+    /**
+     * @notice Creates a new event from a subscription
+     * @param subscriptionId ID that maps to a subscription
+     * @param config Initial values for the event
+     * @param mevDeadline Deadline enforced to prevent mempool manipulation in the case Arthera has a public mempool
+     */
     function createLiquidEvent(uint16 subscriptionId, Types.EventCreditConfig memory config, uint mevDeadline) external onlyDiamond onlySubscriptionCreator(subscriptionId) {
         // Create event from subscription
         require(s.subscriptions[subscriptionId].eventCreditsPromised > s.subscriptions[subscriptionId].eventCreditsCreated);
@@ -40,6 +46,10 @@ contract LiquidEventFacet is Modifiers {
         }
     }
 
+
+    /**
+     * @dev Propose a name and description change for an event, enforcing a time lock
+     */
     function proposeEventCreditNameDescriptionChange(
         string memory newName,
         string memory newDescription,
@@ -75,6 +85,9 @@ contract LiquidEventFacet is Modifiers {
         s.subscriptions[subscriptionId].eventCredits[eventCreditId].description = s.subscriptions[subscriptionId].eventCredits[eventCreditId].timeLockFunc.description;
     }
 
+    /**
+     * @notice Claim an event from a subscription
+     */
     function claimLiquidEvent(uint16 subscriptionId, uint256 eventCreditId) external onlyDiamond isSubscriptionValid(subscriptionId) onlySubscriptors(subscriptionId) isEventCreditIdValid(subscriptionId, eventCreditId) {
         // Claim event
         require(!s.subscriptions[subscriptionId].eventCredits[eventCreditId].isClaimed[msg.sender], "Already claimed");
@@ -87,8 +100,12 @@ contract LiquidEventFacet is Modifiers {
         unchecked {
             s.subscribers[msg.sender].eventCredits++;
         }
-        }
+    }
 
+    /**
+     * @dev Minimal proxy clone of the event NFT collection
+     * @dev 98% lower gas cost than deploying a new contract with conventional methods
+     */
     function cloneEventNFTCollection(uint16 subscriptionId, uint256 eventCreditId) private {
         address newEventNFTCollection = Constants.EVENT_COLLECTION_IMPLEMENTATION.clone();
         uint codeSize;

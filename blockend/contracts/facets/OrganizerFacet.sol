@@ -15,6 +15,9 @@ contract OrganizerFacet is Modifiers {
     using Clones for address;
     // Registry logic for corporation wanting to use the platform
 
+    /**
+     * @notice Register a subscription
+     */
     function registerSubscription(
         uint16 subscriptionId,
         Types.SubscriptionConfig memory config,
@@ -43,9 +46,9 @@ contract OrganizerFacet is Modifiers {
             s.numOfSubscriptions++;
         }
     }
-    /*
+    /**
     * @notice propose a name and description change for a subscription
-    * @dev Has a timelock to 
+    * @dev Has a timelock to prevent misuse without users being warned in a timely manner
     */
     function proposeNameDescriptionChange(
         string memory newName,
@@ -131,6 +134,9 @@ contract OrganizerFacet is Modifiers {
         s.subscriptions[subscriptionId].eventCreditsPromised = newAmount;
     }
 
+    /**
+     * @dev Clone the organizer vault for managing DAO or any other utility for subscriptors
+     */
     function cloneOrganizerVault(uint16 subscriptionId) private {
         address newOrganizerVault = Constants.ORGANIZER_VAULT_IMPLEMENTATION.clone();
         uint codeSize;

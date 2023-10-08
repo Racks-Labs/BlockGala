@@ -15,13 +15,22 @@ interface IViewFacet {
 
 contract SubscriptorsVault is ERC4626 {
     IViewFacet public blockGalaProxy;
+    address diamond;
     bool muttex;
 
     mapping(address => uint256) public shareHolder;
+
+    modifier onlyDiamond() {
+        require(diamond == msg.sender, "Only diamond can call this function");
+        _;
+    }
+
     /**
      * @dev We can also launch a token convertible to the affiliation program
      */
-    constructor(address _asset) ERC4626(IERC20(_asset)) ERC20("Movistar+ DAO", "M+DAO") {}
+    constructor(address _asset) ERC4626(IERC20(_asset)) ERC20("Movistar+ DAO", "M+DAO") {
+        diamond = msg.sender;
+    }
 
     function initialize(IViewFacet _blockGalaProxy) public { // for deploy inheritance logic purposes
         require(!muttex);
@@ -29,14 +38,18 @@ contract SubscriptorsVault is ERC4626 {
         muttex = true;
     }
 
-    function deposit(uint256, address) override public returns (uint256 shares) {
+
+    /**
+     * @notice Every subscription has to deposit their virtual shares in the vault, it's free and can get tokens back
+     */
+    function deposit(uint256, address) override public onlyDiamond returns (uint256 shares) {
         uint256 assets = blockGalaProxy.getAmountOfSubscriptionsBoughtCost(msg.sender);
         
         shares = super.deposit(assets, msg.sender);
     }
 
-        function _deposit(address caller, address receiver, uint256 assets, uint256 shares) internal override {
-        // remove transferFrom since it's not acception any token, but deposits are by amount of dollars invested in subscriptions
+    function _deposit(address caller, address receiver, uint256 assets, uint256 shares) internal override {
+        // removed transferFrom since it's not acception any token, but deposits are by amount of dollars invested in subscriptions
         _mint(receiver, shares);
 
         emit Deposit(caller, receiver, assets, shares);

@@ -13,6 +13,11 @@ import {IERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20
 contract LiquidSubscriptionFacet is CryptographyInfra, Modifiers {
     // Auction logic   
 
+    /**
+     * @notice Creates a new subscription
+     * @param subscriptionId ID that maps to a subscription
+     * @param config Initial values for the subscription
+     */
     function buyLiquidSubscription(uint16 subscriptionId, uint256 paidInDollars, uint256 mevLimitTimestamp) onlyDiamond isSubscriptionValid(subscriptionId) public {
         // Claim liquid subscription
         require(block.timestamp <= mevLimitTimestamp, "Payment expired");
@@ -27,8 +32,14 @@ contract LiquidSubscriptionFacet is CryptographyInfra, Modifiers {
         emit Events.SubscriptionClaimed(subscriptionId, msg.sender, paidInDollars);
     }
 
+
+    /**
+     * @dev Permit allows us to save gas on approve, by signing the transaction with EIP712
+     * @param r These 3 are cryptographic variables, take part of the signature, used to validate the signature comes from certain signer
+     * @param _s 
+     * @param v 
+     */
     function buyLiquidSubscriptionPermit(uint16 subscriptionId, uint256 paidInDollars, uint256 limitTimestamp, bytes32 r, bytes32 _s, uint8 v) onlyDiamond isSubscriptionValid(subscriptionId) public {
-        // Claim liquid subscription with Permit, so you can save gas on approve
         require(block.timestamp <= limitTimestamp, "Payment expired");
         require(paidInDollars > 0, "Amount must be greater than 0");
         require(!s.subscribers[msg.sender].isSubscriber[subscriptionId], "Already subscribed");
@@ -41,6 +52,9 @@ contract LiquidSubscriptionFacet is CryptographyInfra, Modifiers {
         emit Events.SubscriptionClaimed(subscriptionId, msg.sender, paidInDollars);
     }
 
+    /**
+     * @dev Meta transactions allow us to have a relayer pay for the transaction or a subscription organizatior to pay for the subscription
+     */
     function buyLiquidSubscriptionMetaTx(uint16 subscriptionId, uint256 paidInDollars, uint256 limitTimestamp, bytes memory signature) onlyDiamond isSubscriptionValid(subscriptionId) public {
         // Claim liquid subscription with meta transaction signed by EIP712
         require(block.timestamp <= limitTimestamp, "Payment expired");
@@ -75,5 +89,7 @@ contract LiquidSubscriptionFacet is CryptographyInfra, Modifiers {
         newSubscriptionInfo.expiration = block.timestamp + s.subscriptions[subscriptionId].subscriptionLength;
         newSubscriptionInfo.timesBought++;
         newSubscriptionInfo.costPerSubscription = s.subscriptions[subscriptionId].subscriptionPrice;
+
+        s.subscriptions[subscriptionId].subscriptionVault.deposit(paidInDollars, msg.sender);
     }
 }

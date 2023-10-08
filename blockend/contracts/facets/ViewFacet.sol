@@ -6,6 +6,10 @@ import {Modifiers} from "../libraries/Modifiers.sol";
 
 contract ViewFacet is Modifiers {
 
+
+    /**
+     * @dev Returns the amount of subscriptions bought by a user
+     */
     function getAmountOfSubscriptionsBoughtCost(address _blockGalaUser) external view returns (uint256 amount) {
         uint256[] memory _subscriptionIds = s.subscribers[_blockGalaUser].subscriptionsIds;
 

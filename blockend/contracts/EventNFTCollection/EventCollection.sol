@@ -24,7 +24,6 @@ contract EventCollection is ClonableERC721 {
     function initializes(string memory _name, string memory _symbol, string memory _description) public {
         super.initialize(_name, _symbol, _description);
     }
-
     function mint(address to, uint256 quantity) external onlyDiamond {
         _mint(to, quantity);
     }

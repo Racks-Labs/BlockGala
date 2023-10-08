@@ -40,7 +40,8 @@ contract RedeemsFacet is Modifiers, CryptographyInfra {
 
 
     /**
-     * @dev 
+     * @notice In this case redeemeption is done by the owner of the NFT
+     * @dev Used to have buying or invited usres, who have no account on the platform, to redeem their event credit
      */
     function redeemEventCreditByNFT(uint16 subscriptionId, uint256 eventCreditId, uint256 tokenId) external onlyDiamond isSubscriptionValid(subscriptionId) onlySubscriptors(subscriptionId) isEventCreditIdValid(subscriptionId, eventCreditId) {
         // redeem event credit
