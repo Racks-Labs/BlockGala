@@ -14,11 +14,10 @@ const Home: NextPage = () => {
     >
       <div className="px-2">
         <h1 className="mt-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
-          Web3 Onboarding Template 💅
+            BlockGala, Protocol & Infrastructure Layer 🎟️
         </h1>
         <p className="text-xl text-muted-foreground mt-6 text-center mb-8">
-          A demo flow for onboarding both new and existing users onto a web3
-          app.
+            Fully dApp with whole protocol interactivity {"(+2000 SLOC)"} coming soon...
         </p>
       </div>
       <div className="flex flex-col items-center justify-center rounded-xl shadow-xl h-auto max-w-3xl w-11/12 backdrop-blur-xl backdrop-filter bg-white bg-opacity-5 px-8 py-8">
