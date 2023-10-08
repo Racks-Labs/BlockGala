@@ -15,6 +15,9 @@ export const componentsByNetworkId: Record<
   mainnet: {
     landing: {
       id: getComponent`BlockgalaLanding`,
+      props: {
+        fn: () => window.location.href = "/app",
+      },
     },
   },
 };
