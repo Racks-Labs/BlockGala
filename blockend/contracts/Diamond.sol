@@ -10,11 +10,13 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import { IERC4626 } from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {AppStorage} from "./libraries/AppStorage.sol";
 import {Errors} from "./libraries/Errors.sol";
+import "./interfaces/ISubscriptionOwner.sol";
+// import {ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
 // See https://github.com/mudgen/diamond-2-hardhat/blob/main/contracts/Diamond.sol
 // All code taken from diamond implementation, other than init code
 
-contract Diamond {
+contract Diamond is ISubscriptionOwner {
     AppStorage internal s;
 
     constructor(address _protocolOwner, address _diamondCutFacet)
@@ -39,6 +41,7 @@ contract Diamond {
         ds.supportedInterfaces[type(IERC165).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
+        ds.supportedInterfaces[type(ISubscriptionOwner).interfaceId] = true;
 
         // initialize the protocol AppStorage
     }
@@ -46,6 +49,16 @@ contract Diamond {
     function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external returns (bytes4) {
         // ERC721 callback
         return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
+    }
+
+    function getSubscriptionOwner() external view returns (address) {
+        // the owner of the subscription must be an EOA
+        // Replace this with the account created in Step 1
+        return s.admin;
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view  returns (bool) {
+        return interfaceId == type(ISubscriptionOwner).interfaceId;
     }
 
     // Find facet for function that is called and execute the

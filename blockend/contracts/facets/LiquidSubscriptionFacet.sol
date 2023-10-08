@@ -16,7 +16,7 @@ contract LiquidSubscriptionFacet is CryptographyInfra, Modifiers {
     function buyLiquidSubscription(uint16 subscriptionId, uint256 paidInDollars, uint256 mevLimitTimestamp) onlyDiamond isSubscriptionValid(subscriptionId) public {
         // Claim liquid subscription
         require(block.timestamp <= mevLimitTimestamp, "Payment expired");
-        require(paidInDollars > 0, "Amount must be greater than 0");
+        require(paidInDollars == s.subscriptions[subscriptionId].subscriptionPrice, "Invalid amount");
         require(!s.subscribers[msg.sender].isSubscriber[subscriptionId], "Already subscribed");
 
         (bool success) = Constants.USDC.transferFrom(msg.sender, address(this), paidInDollars);
