@@ -17,14 +17,7 @@ export const componentsByNetworkId: Record<
       id: getComponent`BlockgalaLanding`,
       props: {
         fn: () => window.location.href = "/app",
-      },
-    },
-    input: {
-      id: getComponent`ArtheraInput`,
-      props: {
-        fn: (input: string) => {
-          // do something with the user input
-        },
+        cb: (info: string) => console.log(info),
       },
     },
   },
