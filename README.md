@@ -1,4 +1,4 @@
-![image](https://github.com/alex-alra-arteaga/BlockGala/assets/108436798/90165420-753a-4755-af77-6fe399ea9bc7)# BlockGala, Protocol & Infrastructure Layer
+# BlockGala, Protocol & Infrastructure Layer
 ### Vision
 Create a subscription solution which boosts earnings and dynamism for customers and companies together. Even with potential replacing conventional ticketing and supplying affiliation programs.
 
