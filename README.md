@@ -1,4 +1,4 @@
-# BlockGala, Protocol & Infrastructure Layer
+![image](https://github.com/alex-alra-arteaga/BlockGala/assets/108436798/90165420-753a-4755-af77-6fe399ea9bc7)# BlockGala, Protocol & Infrastructure Layer
 ### Vision
 Create a subscription solution which boosts earnings and dynamism for customers and companies together. Even with potential replacing conventional ticketing and supplying affiliation programs.
 
@@ -24,6 +24,11 @@ So about the techy stuff, the smart contracts and all. BlockGala uses a Diamond 
 - **EventCollection**: NFT collection, deployed by minimal proxies to further reduce gas costs, used for externalizing the virtual accounting of the protocol logic internal variables to external markets.
 
 - **SubscriptorsVault**: My favourite one, a vault which gives you shares over the token it issues (it can be a DAO Token for Telefonicas Movistar+ users to propose new movies and series to be included, or a token 1:1 pegged to the affilition program one they have. The shares are directly correlated with the amount you have invested in subscriptions. Each type of subscription have their own Vault, each one gets deployed with minimal proxies also.
+
+#### Contracts Diagram
+
+![image](https://github.com/alex-alra-arteaga/BlockGala/assets/108436798/8030da40-24d1-44ab-86d5-7f9d22b0f024)
+
 
 A lovely part it has, is that the landing of our frontend is stored in NEARs BOS, which means there's a decentralized an permisionless source of truth for accessing and pinning our protocol. A feature that if Uniswap had it implemented a few months ago, would have prevented its DNS attack it suffered, losing millions to its users.
 
